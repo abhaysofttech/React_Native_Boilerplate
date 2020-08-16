@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, SafeAreaView, StyleSheet, Button, Text } from 'react-native';
+import { View, TextInput, SafeAreaView, StyleSheet, Button, Text, Dimensions } from 'react-native';
 
 import Container from './src/components/Container';
 import CustomButton from './src/components/CustomButton';
@@ -10,8 +10,10 @@ import { validators } from './utils/validators';
 interface State {
   form: {
     emailTextInput: string,
-    passwordTextInput: string
-  }
+    passwordTextInput: string,
+  },
+  orientation: string,
+
 
 }
 interface Props {
@@ -29,8 +31,23 @@ export class App extends React.Component<Props, State>{
       form: {
         emailTextInput: '',
         passwordTextInput: ''
-      }
-    }
+      },
+      orientation: 'portrait'
+    };
+
+  }
+
+  componentDidMount() {
+    Dimensions.addEventListener('change', (data) => {
+      const isPortrait = data.window.height > data.window.width;
+      this.setState({
+        orientation: isPortrait ? 'portrait' : 'landscape'
+      })
+    });
+  }
+
+  componentWillUnmount(){
+    Dimensions.removeEventListener('change', () => {})
   }
 
   updateTextInput = (val, type) => {
@@ -55,10 +72,12 @@ export class App extends React.Component<Props, State>{
     console.log('login')
   }
   render() {
+    const { height, width } = Dimensions.get("window");
     return (
 
       <Container containerStyles={{ alignItems: 'center', backgroundColor: '#ccc' }}>
         <Text style={{ fontSize: 30, marginBottom: 10, letterSpacing: 5 }}>Login</Text>
+
         <Formik
           initialValues={this.state.form}
           validateOnMount={true}
@@ -74,12 +93,12 @@ export class App extends React.Component<Props, State>{
                   onSubmitEditing={() => this.passwordInputRef.focus()}
                   returnKeyType={'next'}
                   onChangeText={props.handleChange('emailTextInput')}
-                  style={style.textInput}
+                  style={this.state.orientation === 'portrait' ? portraitStyles.textInput : landScapeStyles.textInput}
                   placeholder={'Email'}
                   value={props.values.emailTextInput}
                   onBlur={() => props.setFieldTouched('emailTextInput')} />
 
-                {props.dirty && props.touched.emailTextInput? <Text style={{ color: 'red' }}>{props.errors.emailTextInput}</Text> : null}
+                {props.dirty && props.touched.emailTextInput ? <Text style={{ color: 'red' }}>{props.errors.emailTextInput}</Text> : null}
 
 
                 <TextInput
@@ -93,12 +112,12 @@ export class App extends React.Component<Props, State>{
                   ref={ref => this.passwordInputRef = ref}
                   returnKeyType={'done'}
                   onChangeText={props.handleChange('passwordTextInput')}
-                  style={style.textInput}
+                  style={this.state.orientation === 'portrait' ? portraitStyles.textInput : landScapeStyles.textInput}
                   placeholder={'Password'}
-                  value={props.values.passwordTextInput} 
-                  onBlur={() => props.setFieldTouched('passwordTextInput')}/>
+                  value={props.values.passwordTextInput}
+                  onBlur={() => props.setFieldTouched('passwordTextInput')} />
 
-                {props.dirty && props.touched.passwordTextInput? <Text style={{ color: 'red' }}>{props.errors.passwordTextInput}</Text> : null}
+                {props.dirty && props.touched.passwordTextInput ? <Text style={{ color: 'red' }}>{props.errors.passwordTextInput}</Text> : null}
 
                 <CustomButton
                   disabled={!props.isValid}
@@ -123,9 +142,18 @@ export class App extends React.Component<Props, State>{
 }
 
 
-const style = StyleSheet.create({
+const portraitStyles = StyleSheet.create({
   textInput: {
     marginBottom: 10,
     width: 300, borderWidth: 1
+  }
+});
+
+
+const landScapeStyles = StyleSheet.create({
+  textInput: {
+    ...portraitStyles.textInput,
+    width: 500,
+    borderColor:'red'
   }
 })
