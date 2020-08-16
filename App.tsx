@@ -6,15 +6,16 @@ import CustomButton from './src/components/CustomButton';
 
 import { Formik } from "formik";
 import { validators } from './utils/validators';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientationChange, removeOrientationListener } from 'react-native-responsive-screen';
+import { Utils } from './utils/utils';
+
 
 interface State {
   form: {
     emailTextInput: string,
     passwordTextInput: string,
-  },
-  orientation: string,
-
-
+  };
+  orientation: string;
 }
 interface Props {
 
@@ -34,45 +35,21 @@ export class App extends React.Component<Props, State>{
       },
       orientation: 'portrait'
     };
-
   }
 
   componentDidMount() {
-    Dimensions.addEventListener('change', (data) => {
-      const isPortrait = data.window.height > data.window.width;
-      this.setState({
-        orientation: isPortrait ? 'portrait' : 'landscape'
-      })
-    });
+    listenOrientationChange(this);
   }
-
-  componentWillUnmount(){
-    Dimensions.removeEventListener('change', () => {})
+  componentWillUnmount() {
+    removeOrientationListener()
   }
-
-  updateTextInput = (val, type) => {
-    switch (type) {
-      case InputType.Email: {
-        this.setState({
-          form: { ...this.state.form, emailTextInput: val }
-        })
-        break;
-      }
-      case InputType.Password: {
-        this.setState({
-          form: { ...this.state.form, passwordTextInput: val }
-        })
-        break;
-      }
-    }
-
-  }
-
   handleLogin() {
     console.log('login')
-  }
+  };
   render() {
-    const { height, width } = Dimensions.get("window");
+    const pStyles = portraitStyles();
+    const lStyles = landScapeStyles();
+    console.log(this.state)
     return (
 
       <Container containerStyles={{ alignItems: 'center', backgroundColor: '#ccc' }}>
@@ -93,9 +70,11 @@ export class App extends React.Component<Props, State>{
                   onSubmitEditing={() => this.passwordInputRef.focus()}
                   returnKeyType={'next'}
                   onChangeText={props.handleChange('emailTextInput')}
-                  style={this.state.orientation === 'portrait' ? portraitStyles.textInput : landScapeStyles.textInput}
+                  style={
+                    Utils.dynamicStyle(pStyles.textInput, lStyles.textInput, this.state.orientation)
+                  }
                   placeholder={'Email'}
-                  value={props.values.emailTextInput}
+                  value={this.state.orientation}
                   onBlur={() => props.setFieldTouched('emailTextInput')} />
 
                 {props.dirty && props.touched.emailTextInput ? <Text style={{ color: 'red' }}>{props.errors.emailTextInput}</Text> : null}
@@ -112,7 +91,10 @@ export class App extends React.Component<Props, State>{
                   ref={ref => this.passwordInputRef = ref}
                   returnKeyType={'done'}
                   onChangeText={props.handleChange('passwordTextInput')}
-                  style={this.state.orientation === 'portrait' ? portraitStyles.textInput : landScapeStyles.textInput}
+                  style={
+                    Utils.dynamicStyle(pStyles.textInput, lStyles.textInput, this.state.orientation)
+
+                  }
                   placeholder={'Password'}
                   value={props.values.passwordTextInput}
                   onBlur={() => props.setFieldTouched('passwordTextInput')} />
@@ -134,26 +116,29 @@ export class App extends React.Component<Props, State>{
             )
           }}
         </Formik>
-
-
       </Container>
     );
   }
 }
 
 
-const portraitStyles = StyleSheet.create({
-  textInput: {
-    marginBottom: 10,
-    width: 300, borderWidth: 1
-  }
-});
+const portraitStyles = () => {
+  return StyleSheet.create({
+    textInput: {
+      marginBottom: 10,
+      width: wp('70%'),
+      borderWidth: 1
+    }
+  });
+};
 
 
-const landScapeStyles = StyleSheet.create({
-  textInput: {
-    ...portraitStyles.textInput,
-    width: 500,
-    borderColor:'red'
-  }
-})
+const landScapeStyles = () => {
+  return StyleSheet.create({
+    textInput: {
+      ...portraitStyles().textInput,
+      width: wp('60%'),
+      borderColor: 'red'
+    }
+  })
+};
