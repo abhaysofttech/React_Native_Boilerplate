@@ -3,9 +3,16 @@ import { View, TextInput, SafeAreaView, StyleSheet, Button, Text } from 'react-n
 
 import Container from './src/components/Container';
 import CustomButton from './src/components/CustomButton';
+
+import { Formik } from "formik";
+import { validators } from './utils/validators';
+
 interface State {
-  emailTextInput: string,
-  passwordTextInput: string
+  form: {
+    emailTextInput: string,
+    passwordTextInput: string
+  }
+
 }
 interface Props {
 
@@ -19,8 +26,10 @@ export class App extends React.Component<Props, State>{
   constructor(props) {
     super(props);
     this.state = {
-      emailTextInput: '',
-      passwordTextInput: ''
+      form: {
+        emailTextInput: '',
+        passwordTextInput: ''
+      }
     }
   }
 
@@ -28,13 +37,13 @@ export class App extends React.Component<Props, State>{
     switch (type) {
       case InputType.Email: {
         this.setState({
-          emailTextInput: val,
+          form: { ...this.state.form, emailTextInput: val }
         })
         break;
       }
       case InputType.Password: {
         this.setState({
-          passwordTextInput: val,
+          form: { ...this.state.form, passwordTextInput: val }
         })
         break;
       }
@@ -50,24 +59,63 @@ export class App extends React.Component<Props, State>{
 
       <Container containerStyles={{ alignItems: 'center', backgroundColor: '#ccc' }}>
         <Text style={{ fontSize: 30, marginBottom: 10, letterSpacing: 5 }}>Login</Text>
-        <TextInput
-          onSubmitEditing={() => this.passwordInputRef.focus()}
-          returnKeyType={'next'}
-          onChangeText={(val) => this.updateTextInput(val, InputType.Email)}
-          style={style.textInput}
-          placeholder={'Email'}
-          value={this.state.emailTextInput} />
+        <Formik
+          initialValues={this.state.form}
+          validateOnMount={true}
+          validateOnChange={true}
+          isInitialValid={false}
+          onSubmit={() => (console.log('on submit'))}
+          validationSchema={validators.loginValidator}
+        >
+          {(props) => {
+            return (
+              <View style={{ alignItems: 'center' }}>
+                <TextInput
+                  onSubmitEditing={() => this.passwordInputRef.focus()}
+                  returnKeyType={'next'}
+                  onChangeText={props.handleChange('emailTextInput')}
+                  style={style.textInput}
+                  placeholder={'Email'}
+                  value={props.values.emailTextInput}
+                  onBlur={() => props.setFieldTouched('emailTextInput')} />
 
-        <TextInput
-        onSubmitEditing={this.handleLogin}
-          ref={ref => this.passwordInputRef = ref}
-          returnKeyType={'done'}
-          onChangeText={(val) => this.updateTextInput(val, InputType.Password)}
-          style={style.textInput}
-          placeholder={'Password'}
-          value={this.state.passwordTextInput} />
+                {props.dirty && props.touched.emailTextInput? <Text style={{ color: 'red' }}>{props.errors.emailTextInput}</Text> : null}
 
-        <CustomButton onPress={this.handleLogin} title="Login" />
+
+                <TextInput
+                  onSubmitEditing={() => {
+                    if (props.isValid) {
+                      console.log('is Valid')
+                    } else {
+                      console.log('form is Not Valid')
+                    }
+                  }}
+                  ref={ref => this.passwordInputRef = ref}
+                  returnKeyType={'done'}
+                  onChangeText={props.handleChange('passwordTextInput')}
+                  style={style.textInput}
+                  placeholder={'Password'}
+                  value={props.values.passwordTextInput} 
+                  onBlur={() => props.setFieldTouched('passwordTextInput')}/>
+
+                {props.dirty && props.touched.passwordTextInput? <Text style={{ color: 'red' }}>{props.errors.passwordTextInput}</Text> : null}
+
+                <CustomButton
+                  disabled={!props.isValid}
+                  title="Login"
+                  onPress={() => {
+                    if (props.isValid) {
+                      console.log('is Valid')
+                      return props.handleSubmit();
+                    } else {
+                      console.log('form is Not Valid', props.errors)
+                    }
+                  }} />
+              </View>
+            )
+          }}
+        </Formik>
+
 
       </Container>
     );

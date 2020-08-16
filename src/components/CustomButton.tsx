@@ -12,7 +12,7 @@ export interface Props {
 const CustomButton = (props: Props) => {
     return <TouchableOpacity
         onPress={props.onPress}
-        style={[styles.buttonStyle, props.buttonStyle]}
+        style={[props.disabled ? {...styles.buttonStyle, backgroundColor:'#cc9'} : styles.buttonStyle, props.buttonStyle]}
         disabled={props.disabled}>
         <Text style={[styles.textStyle, props.textStyle]}>{props.title}</Text>
     </TouchableOpacity>
