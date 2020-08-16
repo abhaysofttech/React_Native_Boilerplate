@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, TextInput, SafeAreaView, StyleSheet, Button } from 'react-native';
+import { View, TextInput, SafeAreaView, StyleSheet, Button, Text } from 'react-native';
 
-import Container from './src/components/Container'
-
+import Container from './src/components/Container';
+import CustomButton from './src/components/CustomButton';
 interface State {
   emailTextInput: string,
   passwordTextInput: string
@@ -48,6 +48,7 @@ export class App extends React.Component<Props, State>{
     return (
 
       <Container containerStyles={{ alignItems: 'center', backgroundColor: '#ccc' }}>
+        <Text style={{fontSize:30, marginBottom:10, letterSpacing:5}}>Login</Text>
         <TextInput
           onChangeText={(val) => this.updateTextInput(val, InputType.Email)}
           style={style.textInput}
@@ -60,7 +61,7 @@ export class App extends React.Component<Props, State>{
           placeholder={'Password'}
           value={this.state.passwordTextInput} />
 
-        <Button title={'Login'} onPress={this.handleLogin} />
+       <CustomButton onPress={this.handleLogin} title="Login"/>
       </Container>
     );
   }
