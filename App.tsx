@@ -15,6 +15,7 @@ enum InputType {
   Password = 'Password'
 }
 export class App extends React.Component<Props, State>{
+  private passwordInputRef;
   constructor(props) {
     super(props);
     this.state = {
@@ -48,20 +49,26 @@ export class App extends React.Component<Props, State>{
     return (
 
       <Container containerStyles={{ alignItems: 'center', backgroundColor: '#ccc' }}>
-        <Text style={{fontSize:30, marginBottom:10, letterSpacing:5}}>Login</Text>
+        <Text style={{ fontSize: 30, marginBottom: 10, letterSpacing: 5 }}>Login</Text>
         <TextInput
+          onSubmitEditing={() => this.passwordInputRef.focus()}
+          returnKeyType={'next'}
           onChangeText={(val) => this.updateTextInput(val, InputType.Email)}
           style={style.textInput}
           placeholder={'Email'}
           value={this.state.emailTextInput} />
 
         <TextInput
+        onSubmitEditing={this.handleLogin}
+          ref={ref => this.passwordInputRef = ref}
+          returnKeyType={'done'}
           onChangeText={(val) => this.updateTextInput(val, InputType.Password)}
           style={style.textInput}
           placeholder={'Password'}
           value={this.state.passwordTextInput} />
 
-       <CustomButton onPress={this.handleLogin} title="Login"/>
+        <CustomButton onPress={this.handleLogin} title="Login" />
+
       </Container>
     );
   }
