@@ -1,46 +1,75 @@
 import React from 'react';
-import { View, TextInput, SafeAreaView, StyleSheet } from 'react-native';
+import { View, TextInput, SafeAreaView, StyleSheet, Button } from 'react-native';
 
+import Container from './src/components/Container'
 
 interface State {
-  textInputValue: string
+  emailTextInput: string,
+  passwordTextInput: string
 }
 interface Props {
 
+}
+enum InputType {
+  Email = 'Email',
+  Password = 'Password'
 }
 export class App extends React.Component<Props, State>{
   constructor(props) {
     super(props);
     this.state = {
-      textInputValue: ''
+      emailTextInput: '',
+      passwordTextInput: ''
     }
   }
 
-  updateTextInputValue = (val) => {
-    this.setState({
-      textInputValue: val
-    })
+  updateTextInput = (val, type) => {
+    switch (type) {
+      case InputType.Email: {
+        this.setState({
+          emailTextInput: val,
+        })
+        break;
+      }
+      case InputType.Password: {
+        this.setState({
+          passwordTextInput: val,
+        })
+        break;
+      }
+    }
 
+  }
+
+  handleLogin() {
+    console.log('login')
   }
   render() {
     return (
-      <SafeAreaView style={styles.container}>
-        <View>
-          <TextInput
-            onChangeText={this.updateTextInputValue}
-            style={{ width: 300, borderWidth: 1, alignSelf: 'center' }}
-            placeholder={'Email'}
-            value={this.state.textInputValue} />
-        </View>
-      </SafeAreaView>
 
+      <Container containerStyles={{ alignItems: 'center', backgroundColor: '#ccc' }}>
+        <TextInput
+          onChangeText={(val) => this.updateTextInput(val, InputType.Email)}
+          style={style.textInput}
+          placeholder={'Email'}
+          value={this.state.emailTextInput} />
+
+        <TextInput
+          onChangeText={(val) => this.updateTextInput(val, InputType.Password)}
+          style={style.textInput}
+          placeholder={'Password'}
+          value={this.state.passwordTextInput} />
+
+        <Button title={'Login'} onPress={this.handleLogin} />
+      </Container>
     );
-
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1, justifyContent: 'center', alignItems: 'stretch'
+
+const style = StyleSheet.create({
+  textInput: {
+    marginBottom: 10,
+    width: 300, borderWidth: 1
   }
 })
