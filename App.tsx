@@ -3,6 +3,7 @@ import { View, TextInput, SafeAreaView, StyleSheet, Button, Text, Dimensions } f
 
 import Container from './src/components/Container';
 import CustomButton from './src/components/CustomButton';
+import If from './src/components/if';
 
 import { Formik } from "formik";
 import { validators } from './utils/validators';
@@ -43,9 +44,7 @@ export class App extends React.Component<Props, State>{
   componentWillUnmount() {
     removeOrientationListener()
   }
-  handleLogin() {
-    console.log('login')
-  };
+
   render() {
     const pStyles = portraitStyles();
     const lStyles = landScapeStyles();
@@ -74,11 +73,15 @@ export class App extends React.Component<Props, State>{
                     Utils.dynamicStyle(pStyles.textInput, lStyles.textInput, this.state.orientation)
                   }
                   placeholder={'Email'}
-                  value={this.state.orientation}
+                  value={props.values.emailTextInput}
                   onBlur={() => props.setFieldTouched('emailTextInput')} />
-
-                {props.dirty && props.touched.emailTextInput ? <Text style={{ color: 'red' }}>{props.errors.emailTextInput}</Text> : null}
-
+                
+                {/* Single responsiblity component */}
+                <If show={props.dirty && props.touched.emailTextInput}>
+                  <Text style={{ color: 'red' }}>
+                    {props.errors.emailTextInput}
+                  </Text>
+                </If>
 
                 <TextInput
                   onSubmitEditing={() => {
@@ -99,8 +102,11 @@ export class App extends React.Component<Props, State>{
                   value={props.values.passwordTextInput}
                   onBlur={() => props.setFieldTouched('passwordTextInput')} />
 
-                {props.dirty && props.touched.passwordTextInput ? <Text style={{ color: 'red' }}>{props.errors.passwordTextInput}</Text> : null}
-
+                <If show={props.dirty && props.touched.passwordTextInput}>
+                  <Text style={{ color: 'red' }}>
+                    {props.errors.passwordTextInput}
+                  </Text>
+                </If>
                 <CustomButton
                   disabled={!props.isValid}
                   title="Login"
