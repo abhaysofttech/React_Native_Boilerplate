@@ -6,9 +6,9 @@ import CustomButton from './src/components/CustomButton';
 import If from './src/components/if';
 
 import { Formik } from "formik";
-import { validators } from './utils/validators';
+import { validators } from './src/utils/validators';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientationChange, removeOrientationListener } from 'react-native-responsive-screen';
-import { Utils } from './utils/utils';
+import { Utils } from './src/utils/utils';
 
 
 interface State {
