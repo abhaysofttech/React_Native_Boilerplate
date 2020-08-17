@@ -10,6 +10,7 @@ import { validators } from './src/utils/validators';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientationChange, removeOrientationListener } from 'react-native-responsive-screen';
 import { Utils } from './src/utils/utils';
 
+import {pComponentStyles, lComponentStyles, Typography} from './src/styles/Global'
 
 interface State {
   form: {
@@ -52,7 +53,11 @@ export class App extends React.Component<Props, State>{
     return (
 
       <Container containerStyles={{ alignItems: 'center', backgroundColor: '#ccc' }}>
-        <Text style={{ fontSize: 30, marginBottom: 10, letterSpacing: 5 }}>Login</Text>
+        <Text style={[
+          Typography.title,
+          {letterSpacing:5, marginBottom:hp('2%')}]}
+          >
+            Login</Text>
 
         <Formik
           initialValues={this.state.form}
@@ -70,7 +75,7 @@ export class App extends React.Component<Props, State>{
                   returnKeyType={'next'}
                   onChangeText={props.handleChange('emailTextInput')}
                   style={
-                    Utils.dynamicStyle(pStyles.textInput, lStyles.textInput, this.state.orientation)
+                    Utils.dynamicStyle(pComponentStyles().textInput, lComponentStyles().textInput, this.state.orientation)
                   }
                   placeholder={'Email'}
                   value={props.values.emailTextInput}
@@ -95,7 +100,7 @@ export class App extends React.Component<Props, State>{
                   returnKeyType={'done'}
                   onChangeText={props.handleChange('passwordTextInput')}
                   style={
-                    Utils.dynamicStyle(pStyles.textInput, lStyles.textInput, this.state.orientation)
+                    Utils.dynamicStyle(pComponentStyles().textInput, lComponentStyles().textInput, this.state.orientation)
 
                   }
                   placeholder={'Password'}
@@ -130,21 +135,13 @@ export class App extends React.Component<Props, State>{
 
 const portraitStyles = () => {
   return StyleSheet.create({
-    textInput: {
-      marginBottom: 10,
-      width: wp('70%'),
-      borderWidth: 1
-    }
+   
   });
 };
 
 
 const landScapeStyles = () => {
   return StyleSheet.create({
-    textInput: {
-      ...portraitStyles().textInput,
-      width: wp('60%'),
-      borderColor: 'red'
-    }
+   
   })
 };
