@@ -26,6 +26,11 @@ export const Typography : any= {
         fontSize : wp('3.2%'),
         color:PrimaryTheme.$TEXT_COLOR_300,
         fontWeight:'500'
+    },
+    errorText:{
+        fontSize : wp('3%'),
+        color:PrimaryTheme.$ERROR_COLOR,
+        fontWeight:'500'
     }
 }
 

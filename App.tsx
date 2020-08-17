@@ -4,13 +4,13 @@ import { View, TextInput, SafeAreaView, StyleSheet, Button, Text, Dimensions } f
 import Container from './src/components/Container';
 import CustomButton from './src/components/CustomButton';
 import If from './src/components/if';
-
+import CustomText from './src/components/CustomText';
 import { Formik } from "formik";
 import { validators } from './src/utils/validators';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, listenOrientationChange, removeOrientationListener } from 'react-native-responsive-screen';
 import { Utils } from './src/utils/utils';
 
-import {pComponentStyles, lComponentStyles, Typography} from './src/styles/Global'
+import { pComponentStyles, lComponentStyles, Typography } from './src/styles/Global'
 
 interface State {
   form: {
@@ -53,11 +53,11 @@ export class App extends React.Component<Props, State>{
     return (
 
       <Container containerStyles={{ alignItems: 'center', backgroundColor: '#ccc' }}>
-        <Text style={[
+        <CustomText style={[
           Typography.title,
-          {letterSpacing:5, marginBottom:hp('2%')}]}
-          >
-            Login</Text>
+          { letterSpacing: 5, marginBottom: hp('2%') }]}
+        >
+          Login</CustomText>
 
         <Formik
           initialValues={this.state.form}
@@ -80,12 +80,12 @@ export class App extends React.Component<Props, State>{
                   placeholder={'Email'}
                   value={props.values.emailTextInput}
                   onBlur={() => props.setFieldTouched('emailTextInput')} />
-                
+
                 {/* Single responsiblity component */}
                 <If show={props.dirty && props.touched.emailTextInput}>
-                  <Text style={{ color: 'red' }}>
+                  <CustomText style={[Typography.errorText]}>
                     {props.errors.emailTextInput}
-                  </Text>
+                  </CustomText>
                 </If>
 
                 <TextInput
@@ -108,9 +108,9 @@ export class App extends React.Component<Props, State>{
                   onBlur={() => props.setFieldTouched('passwordTextInput')} />
 
                 <If show={props.dirty && props.touched.passwordTextInput}>
-                  <Text style={{ color: 'red' }}>
+                  <CustomText style={[Typography.errorText]}>
                     {props.errors.passwordTextInput}
-                  </Text>
+                  </CustomText>
                 </If>
                 <CustomButton
                   disabled={!props.isValid}
@@ -135,13 +135,13 @@ export class App extends React.Component<Props, State>{
 
 const portraitStyles = () => {
   return StyleSheet.create({
-   
+
   });
 };
 
 
 const landScapeStyles = () => {
   return StyleSheet.create({
-   
+
   })
 };

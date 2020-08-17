@@ -9,4 +9,5 @@ export enum PrimaryTheme{
     $TEXT_COLOR_300 = '#666666',
     $TEXT_COLOR_700 = '#333333',
     $DIVIDER_COLOR = '#BDBDBD',
+    $ERROR_COLOR = 'red',
 }
